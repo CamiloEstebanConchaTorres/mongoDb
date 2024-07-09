@@ -1,4 +1,4 @@
-const connectToDatabase = require('./conection');
+const connectToDatabase = require('./conection.js');
 
 async function getTotalDvdCopies() {
     const client = await connectToDatabase();
@@ -21,7 +21,7 @@ async function getOscarWinningActors() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.find({ "awards.name": "Oscar Award" }).toArray();
         return result;
     } finally {
@@ -33,7 +33,7 @@ async function getTotalAwardsPerActor() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.aggregate([
             { $project: { full_name: 1, totalAwards: { $size: "$awards" } } }
         ]).toArray();
@@ -47,7 +47,7 @@ async function getActorsBornAfter1980() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.find({ date_of_birth: { $gt: new Date("1980-01-01") } }).toArray();
         return result;
     } finally {
@@ -59,7 +59,7 @@ async function getActorWithMostAwards() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.aggregate([
             { $project: { full_name: 1, totalAwards: { $size: "$awards" } } },
             { $sort: { totalAwards: -1 } },
@@ -116,7 +116,7 @@ async function getTotalActors() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.countDocuments();
         return result;
     } finally {
@@ -128,7 +128,7 @@ async function getAverageActorAge() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.aggregate([
             { $project: { age: { $subtract: [new Date().getFullYear(), { $year: "$date_of_birth" }] } } },
             { $group: { _id: null, avgAge: { $avg: "$age" } } },
@@ -144,7 +144,7 @@ async function getActorsWithInstagram() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.find({ "social_media.instagram": { $exists: true, $ne: "" } }).toArray();
         return result;
     } finally {
@@ -168,7 +168,7 @@ async function getTotalAwards() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.aggregate([
             { $unwind: "$awards" },
             { $count: "totalAwards" }
@@ -224,7 +224,7 @@ async function getActorsWithAwardsAfter2015() {
     const client = await connectToDatabase();
     try {
         const database = client.db('blockbuster');
-        const collection = database.collection('actors');
+        const collection = database.collection('actores');
         const result = await collection.find({ "awards.year": { $gt: 2015 } }).toArray();
         return result;
     } finally {
